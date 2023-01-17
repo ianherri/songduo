@@ -5,7 +5,7 @@ import {
   signOut,
 } from 'firebase/auth'
 
-import initFirebase from '../config/firebase'
+import { initFirebase } from '../config/firebase'
 
 initFirebase()
 

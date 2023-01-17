@@ -1,14 +1,15 @@
 <template>
   <div @click="handleSongClick" class="song-container">
-    <h1 class="song-title">title</h1>
+    <h1 class="song-title">{{ props.title }}</h1>
     <h2 class="song-author">author</h2>
   </div>
 </template>
 
 <script setup>
-function handleSongClick() {
-  console.log('click')
-}
+import { defineProps } from 'vue'
+const props = defineProps({
+  title: String,
+})
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
