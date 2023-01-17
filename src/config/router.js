@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import LandingPage from '@/components/LandingPage.vue'
 import UserProfile from '@/components/UserProfile.vue'
+import EditSong from '@/components/EditSong.vue'
 
 // 2. Define some routes
 // Each route should map to a component.
@@ -9,6 +10,7 @@ import UserProfile from '@/components/UserProfile.vue'
 const routes = [
   { path: '/', component: LandingPage, name: 'home' },
   { path: '/user', component: UserProfile, name: 'user' },
+  { path: '/editsong/:id', component: EditSong, name: 'editsong' },
 ]
 
 // 3. Create the router instance and pass the `routes` option

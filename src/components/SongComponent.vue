@@ -7,9 +7,17 @@
 
 <script setup>
 import { defineProps } from 'vue'
+import { useRouter } from 'vue-router'
 const props = defineProps({
   title: String,
+  songId: String,
 })
+const router = useRouter()
+
+function handleSongClick() {
+  console.log(props.songId)
+  router.push({ name: 'editsong', params: { id: props.songId } })
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -28,9 +36,12 @@ const props = defineProps({
 
 .song-title {
   margin: 0;
+  font-size: 24px;
+  text-align: center;
 }
 
 .song-author {
   margin: 0;
+  font-size: 18px;
 }
 </style>
