@@ -4,6 +4,8 @@ import {
   addDoc,
   getDocs,
   query,
+  doc,
+  getDoc,
 } from 'firebase/firestore/lite'
 import { getAuth } from 'firebase/auth'
 
@@ -39,9 +41,21 @@ export default function useState() {
       const songs = await getDocs(q)
       const parsedSongs = []
       songs.forEach((doc) => {
-        parsedSongs.push(doc.data())
+        parsedSongs.push({ id: doc.id, data: doc.data() })
       })
       return parsedSongs
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function getSong(id) {
+    const firestoreDB = getFirestore()
+    const songRef = doc(firestoreDB, 'songs', id)
+
+    try {
+      const docSnap = await getDoc(songRef)
+      return docSnap.data()
     } catch (error) {
       console.log(error)
     }
@@ -50,5 +64,6 @@ export default function useState() {
   return {
     addNewSong,
     returnSongs,
+    getSong,
   }
 }

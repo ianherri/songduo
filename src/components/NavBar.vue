@@ -25,8 +25,11 @@ function handleSignOut() {
 .nav-container {
   width: 800px;
   height: 60px;
+  padding-top: 10px;
   display: flex;
   flex-direction: row;
+
+  align-items: center;
   justify-content: space-between;
 }
 
@@ -35,7 +38,8 @@ function handleSignOut() {
   font-size: 48px;
   font-weight: 100;
   margin: 0;
-  line-height: 50px;
+  padding: 0;
+  line-height: 48px;
 }
 
 .nav-button {

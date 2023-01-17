@@ -10,7 +10,7 @@
             Add new song
           </button>
           <div v-for="song in songs" :key="song.id" class="song-list">
-            <SongComponent :title="song.title" />
+            <SongComponent :title="song.data.title" :songId="song.id" />
           </div>
         </div>
       </div>
@@ -68,7 +68,7 @@ async function handleAddNewSong() {
   flex-direction: column;
   align-items: center;
   width: 800px;
-  height: 100vh;
+  height: auto;
 }
 
 .user-page-body {
