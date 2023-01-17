@@ -6,12 +6,12 @@
       <div v-else class="user-heading">
         <h2>{{ activeUser }} the Songwriter</h2>
         <div class="song-list-container">
-          <button class="add-song-button">Add new song</button>
-          <SongComponent />
-          <SongComponent />
-          <SongComponent />
-          <SongComponent />
-          <SongComponent />
+          <button @click="handleAddNewSong" class="add-song-button">
+            Add new song
+          </button>
+          <div v-for="song in songs" :key="song.id" class="song-list">
+            <SongComponent :title="song.title" />
+          </div>
         </div>
       </div>
     </div>
@@ -24,12 +24,14 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { onMounted, ref } from 'vue'
 import NavBar from './NavBar.vue'
 import SongComponent from './SongComponent.vue'
+import useState from '../composables/state'
 
 const activeUser = ref('')
 const loading = ref(true)
+const songs = ref([])
 const router = useRouter()
 
-onMounted(() => {
+onMounted(async () => {
   const auth = getAuth()
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -43,7 +45,20 @@ onMounted(() => {
       })
     }
   })
+
+  songs.value = await returnSongs()
+  console.log(songs.value)
 })
+
+const { addNewSong, returnSongs } = useState()
+
+async function handleAddNewSong() {
+  await addNewSong()
+
+  // load all songs again
+
+  songs.value = await returnSongs()
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -68,6 +83,7 @@ onMounted(() => {
 .song-list-container {
   display: flex;
   flex-direction: row;
+  justify-content: left;
   flex-wrap: wrap;
   gap: 24px;
 }
