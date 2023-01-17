@@ -2,14 +2,14 @@
 import { initializeApp } from 'firebase/app'
 
 // TODO: figure out this env
-// const FIREBASEAPI = process.env.FIREBASE_API_KEY
+const FIREBASEAPI = process.env.VUE_APP_FIREBASE_API_KEY
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: '',
+  apiKey: FIREBASEAPI,
   authDomain: 'songduo-5425e.firebaseapp.com',
   projectId: 'songduo-5425e',
   storageBucket: 'songduo-5425e.appspot.com',

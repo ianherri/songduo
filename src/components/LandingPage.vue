@@ -57,4 +57,10 @@ async function handleSignIn() {
   font-weight: 500;
   margin: 0;
 }
+
+@media (max-width: 800px) {
+  .landing-page-container {
+    width: 100vw;
+  }
+}
 </style>
