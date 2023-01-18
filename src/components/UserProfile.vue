@@ -4,7 +4,13 @@
     <div class="user-page-body">
       <div v-if="loading" class="loading">loading</div>
       <div v-else class="user-heading">
-        <h2 class="user-heading">{{ activeUser }} the Songwriter</h2>
+        <h2 class="user-heading">
+          Write a song, {{ activeUser.split(' ')[0] }}
+        </h2>
+        <p class="beta-notice">
+          Note, this is app is a beta. Do not share sensitive personal data, all
+          content published is available to all other users.
+        </p>
         <div class="song-list-container">
           <button @click="handleAddNewSong" class="add-song-button">
             Add new song
@@ -89,6 +95,16 @@ async function handleAddNewSong() {
   width: 600px;
   height: auto;
   gap: 24px;
+}
+
+.user-heading {
+  font-size: 36px;
+}
+
+.beta-notice {
+  font-size: 12px;
+  font-style: italic;
+  color: rgb(227, 117, 33);
 }
 
 .song-list-container {

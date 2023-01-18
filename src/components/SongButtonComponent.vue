@@ -46,6 +46,8 @@ function handleSongClick() {
   padding: 12px;
   font-size: 18px;
   text-align: center;
+  height: 32px;
+  overflow: hidden;
 }
 
 .song-author {
