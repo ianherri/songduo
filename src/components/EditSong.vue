@@ -4,25 +4,36 @@
   <div v-else class="song-edit-container">
     <form>
       <div class="title-container">
-        <input class="song-title-input" v-model="song.title" type="text" />
+        <textarea
+          oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'
+          class="song-title-input"
+          v-model="song.title"
+          type="text"
+        ></textarea>
       </div>
       <div class="author-container">Author: {{ activeUser }}</div>
       <div
         class="stanza-list-container"
-        v-for="stanza in song.stanzas"
+        v-for="(stanza, index) in song.stanzas"
         :key="stanza.id"
       >
         <div class="stanza">
-          <input
+          <textarea
+            oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'
             class="stanza-input"
+            :class="{ 'odd-number': index % 2 !== 0 }"
             @keyup.delete="() => removeStanza(stanza.id)"
+            @focus="ct = 0"
             v-model="stanza.text"
-          />
+          ></textarea>
         </div>
       </div>
       <button class="add-stanza-button" @click="addStanza">add stanza +</button>
     </form>
     <button @click="saveSong">save changes -></button>
+    <Transition name="fade">
+      <div class="notification-message" v-if="message != ''">{{ message }}</div>
+    </Transition>
   </div>
 </template>
 
@@ -40,6 +51,8 @@ const loading = ref(true)
 const song = ref({})
 const stanzaCount = ref(0)
 const songId = route.params.id
+const message = ref('')
+let ct = 0
 
 onMounted(async () => {
   const auth = getAuth()
@@ -54,7 +67,7 @@ function addStanza(event) {
   event.preventDefault()
   song.value.stanzas.push({
     id: stanzaCount.value,
-    text: ' ',
+    text: '',
     type: 'Verse',
     stanza_author: activeUser.value,
   })
@@ -65,18 +78,28 @@ function addStanza(event) {
  * calls modifySong(id, {title: "String", stanzas: [{id: int, text: Strnig, type: String, stanza_author: uid}]})
  */
 async function saveSong(event) {
-  console.log('save song')
   event.preventDefault()
   const data = { title: song.value.title, stanzas: song.value.stanzas }
-  console.log(song.value)
+
   await modifySong(songId, data)
+
+  message.value = 'Changes saved'
+
+  setTimeout(() => {
+    console.log('3 seconds have passed')
+    message.value = ''
+  }, 2000)
 }
 
 function removeStanza(id) {
-  console.log(id)
-  console.log()
-  if (song.value.stanzas.filter((stanza) => stanza.id === id)[0].text === '') {
+  ct += 1
+  console.log(ct)
+  if (
+    song.value.stanzas.filter((stanza) => stanza.id === id)[0].text === '' &&
+    ct > 1
+  ) {
     song.value.stanzas = song.value.stanzas.filter((stanza) => stanza.id != id)
+    ct = 0
   }
 }
 </script>
@@ -88,6 +111,7 @@ function removeStanza(id) {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 24px;
 }
 
 label {
@@ -102,6 +126,7 @@ button {
 .title-container {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   width: 600px;
   margin-bottom: 20px;
 }
@@ -125,6 +150,7 @@ button {
   font-size: 24px;
   font-weight: 900;
   margin-bottom: 40px;
+  padding: 2px;
 }
 
 .stanza-list-container {
@@ -138,10 +164,12 @@ button {
 
 .stanza-input {
   width: 100%;
-  height: auto;
   font-size: 16px;
   border: none;
-  padding: 4px 12px 4px 12px;
+}
+
+.odd-number {
+  background-color: rgb(239, 239, 239);
 }
 
 .add-stanza-button {
@@ -149,6 +177,19 @@ button {
   height: 40px;
   background-color: white;
   color: black;
+}
+
+.notification-message {
+  color: rgb(226, 134, 14);
+  font-weight: 900;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 
 @media (max-width: 800px) {

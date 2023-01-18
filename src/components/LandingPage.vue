@@ -4,7 +4,9 @@
       <h1 class="landing-page-logo-text">SongDuo</h1>
       <h3 class="landing-page-logo-subtext">Write songs with your friends</h3>
     </div>
+
     <button @click="handleSignIn">start -></button>
+    <p class="beta-notice">Google Sign Up Only</p>
   </div>
 </template>
 
@@ -57,6 +59,12 @@ async function handleSignIn() {
   font-size: 24px;
   font-weight: 500;
   margin: 0;
+}
+
+.beta-notice {
+  font-size: 12px;
+  font-style: italic;
+  color: rgb(227, 117, 33);
 }
 
 @media (max-width: 800px) {

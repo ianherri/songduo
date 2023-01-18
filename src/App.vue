@@ -29,4 +29,12 @@ button {
   color: white;
   cursor: pointer;
 }
+
+textarea {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 4px 12px 4px 12px;
+  resize: none;
+  vertical-align: middle;
+}
 </style>
