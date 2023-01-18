@@ -10,7 +10,13 @@
             Add new song
           </button>
           <div v-for="song in songs" :key="song.id" class="song-list">
-            <SongComponent :title="song.data.title" :songId="song.id" />
+            <SongButtonComponent
+              :title="song.data.title"
+              :authorId="song.data.authorId"
+              :authorName="song.data.authorName"
+              :songId="song.id"
+              :time="song.data.time"
+            />
           </div>
         </div>
       </div>
@@ -23,7 +29,7 @@ import { useRouter } from 'vue-router'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { onMounted, ref } from 'vue'
 import NavBar from './NavBar.vue'
-import SongComponent from './SongComponent.vue'
+import SongButtonComponent from './SongButtonComponent.vue'
 import useState from '../composables/state'
 
 const activeUser = ref('')
@@ -69,6 +75,7 @@ async function handleAddNewSong() {
   align-items: center;
   width: 800px;
   height: auto;
+  margin-top: 40px;
 }
 
 .user-page-body {
@@ -86,6 +93,7 @@ async function handleAddNewSong() {
   justify-content: left;
   flex-wrap: wrap;
   gap: 24px;
+  margin-top: 40px;
 }
 
 .add-song-button {

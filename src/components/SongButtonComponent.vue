@@ -1,7 +1,10 @@
 <template>
   <div @click="handleSongClick" class="song-container">
     <h1 class="song-title">{{ props.title }}</h1>
-    <h2 class="song-author">author</h2>
+    <h2 class="song-author">by:{{ props.authorName }}</h2>
+    <p class="created-date">
+      {{ new Date(props.time.seconds * 1000).toISOString().split('T')[0] }}
+    </p>
   </div>
 </template>
 
@@ -10,7 +13,10 @@ import { defineProps } from 'vue'
 import { useRouter } from 'vue-router'
 const props = defineProps({
   title: String,
+  time: Date,
   songId: String,
+  authorId: String,
+  authorName: String,
 })
 const router = useRouter()
 
@@ -36,12 +42,22 @@ function handleSongClick() {
 
 .song-title {
   margin: 0;
-  font-size: 24px;
+  padding: 12px;
+  font-size: 18px;
   text-align: center;
 }
 
 .song-author {
   margin: 0;
-  font-size: 18px;
+  padding: 0px 12px 0px 12px;
+  font-weight: 600;
+  font-size: 12px;
+  text-align: center;
+}
+
+.created-date {
+  margin: 0;
+  font-weight: 400;
+  font-size: 12px;
 }
 </style>

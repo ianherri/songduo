@@ -6,6 +6,7 @@ import {
   query,
   doc,
   getDoc,
+  updateDoc,
 } from 'firebase/firestore/lite'
 import { getAuth } from 'firebase/auth'
 
@@ -22,9 +23,17 @@ export default function useState() {
 
     try {
       await addDoc(songsColl, {
-        author: auth.currentUser.uid,
+        authorId: auth.currentUser.uid,
+        authorName: auth.currentUser.displayName,
         title: `${auth.currentUser.displayName.split(' ')[0]}'s new song`,
-        stanzas: [],
+        stanzas: [
+          {
+            id: 0,
+            text: 'First verse stanza',
+            type: 'Verse',
+            stanza_author: auth.currentUser.displayName,
+          },
+        ],
         time: new Date(),
       })
     } catch (error) {
@@ -50,6 +59,7 @@ export default function useState() {
   }
 
   async function getSong(id) {
+    initFirebase()
     const firestoreDB = getFirestore()
     const songRef = doc(firestoreDB, 'songs', id)
 
@@ -61,9 +71,30 @@ export default function useState() {
     }
   }
 
+  /**
+   *
+   * @param {*} id
+   * @param {*} data {title: String, stanzas: []stanza}
+   * @returns void
+   */
+  async function modifySong(id, data) {
+    const firestoreDB = getFirestore()
+    const songRef = doc(firestoreDB, 'songs', id)
+    console.log(data)
+    try {
+      await updateDoc(songRef, {
+        title: data.title,
+        stanzas: data.stanzas,
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return {
     addNewSong,
     returnSongs,
     getSong,
+    modifySong,
   }
 }
