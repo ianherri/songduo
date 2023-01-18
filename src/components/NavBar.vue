@@ -1,15 +1,22 @@
 <template>
   <div class="nav-container">
-    <h1 class="nav-logo">SD</h1>
+    <h1 @click="handleProfileNav" class="nav-logo">SD</h1>
     <button @click="handleSignOut" class="nav-button">sign out</button>
   </div>
 </template>
 
 <script setup>
-import { doSignOut } from '@/composables/auth'
+import useAuth from '@/composables/auth'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const { doSignOut } = useAuth()
+
+function handleProfileNav() {
+  router.push({
+    name: 'user',
+  })
+}
 
 function handleSignOut() {
   doSignOut()

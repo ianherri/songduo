@@ -9,10 +9,11 @@
 </template>
 
 <script setup>
-import { signIn } from '../composables/auth'
+import useAuth from '../composables/auth'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const { signIn } = useAuth()
 
 async function handleSignIn() {
   const user = await signIn()
