@@ -38,6 +38,7 @@ function handleSongClick() {
   gap: 12px;
   background-color: white;
   color: black;
+  cursor: pointer;
 }
 
 .song-title {
