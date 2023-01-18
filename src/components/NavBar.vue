@@ -47,6 +47,7 @@ function handleSignOut() {
   margin: 0;
   padding: 0;
   line-height: 48px;
+  cursor: pointer;
 }
 
 .nav-button {
@@ -55,7 +56,15 @@ function handleSignOut() {
 
 @media (max-width: 800px) {
   .nav-container {
-    width: 100vw;
+    max-width: 100vw;
+  }
+
+  .nav-logo {
+    padding-left: 12px;
+  }
+
+  .nav-button {
+    padding-right: 12px;
   }
 }
 </style>

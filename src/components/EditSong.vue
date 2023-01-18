@@ -4,20 +4,23 @@
   <div v-else class="song-edit-container">
     <form>
       <div class="title-container">
-        <label>title</label>
         <input class="song-title-input" v-model="song.title" type="text" />
       </div>
+      <div class="author-container">Author: {{ activeUser }}</div>
       <div
         class="stanza-list-container"
         v-for="stanza in song.stanzas"
         :key="stanza.id"
       >
         <div class="stanza">
-          <label>stanza: {{ stanza.id }}</label>
-          <input class="stanza-input" v-model="stanza.text" />
+          <input
+            class="stanza-input"
+            @keyup.delete="() => removeStanza(stanza.id)"
+            v-model="stanza.text"
+          />
         </div>
       </div>
-      <button @click="addStanza">add stanza +</button>
+      <button class="add-stanza-button" @click="addStanza">add stanza +</button>
     </form>
     <button @click="saveSong">save changes -></button>
   </div>
@@ -42,7 +45,6 @@ onMounted(async () => {
   const auth = getAuth()
   song.value = await getSong(songId)
   stanzaCount.value = song.value.stanzas.length
-  console.log(song.value)
   loading.value = false
   activeUser.value = auth.currentUser.displayName
   loading.value = false
@@ -52,7 +54,7 @@ function addStanza(event) {
   event.preventDefault()
   song.value.stanzas.push({
     id: stanzaCount.value,
-    text: 'New stanza',
+    text: ' ',
     type: 'Verse',
     stanza_author: activeUser.value,
   })
@@ -69,6 +71,14 @@ async function saveSong(event) {
   console.log(song.value)
   await modifySong(songId, data)
 }
+
+function removeStanza(id) {
+  console.log(id)
+  console.log()
+  if (song.value.stanzas.filter((stanza) => stanza.id === id)[0].text === '') {
+    song.value.stanzas = song.value.stanzas.filter((stanza) => stanza.id != id)
+  }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -81,7 +91,7 @@ async function saveSong(event) {
 }
 
 label {
-  width: 100px;
+  width: 24px;
 }
 
 button {
@@ -98,6 +108,23 @@ button {
 
 .song-title-input {
   width: 100%;
+  background-color: black;
+  font-size: 36px;
+  font-weight: 900;
+  color: white;
+  border: none;
+}
+
+.song-title-input:focus,
+.stanza-input:focus {
+  border: none;
+  outline: none;
+}
+
+.author-container {
+  font-size: 24px;
+  font-weight: 900;
+  margin-bottom: 40px;
 }
 
 .stanza-list-container {
@@ -111,8 +138,17 @@ button {
 
 .stanza-input {
   width: 100%;
-  border: 0.5px solid lightgray;
-  padding: 2px 2px 2px 2px;
+  height: auto;
+  font-size: 16px;
+  border: none;
+  padding: 4px 12px 4px 12px;
+}
+
+.add-stanza-button {
+  width: 100%;
+  height: 40px;
+  background-color: white;
+  color: black;
 }
 
 @media (max-width: 800px) {

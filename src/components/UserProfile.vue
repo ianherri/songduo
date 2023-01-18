@@ -4,7 +4,7 @@
     <div class="user-page-body">
       <div v-if="loading" class="loading">loading</div>
       <div v-else class="user-heading">
-        <h2>{{ activeUser }} the Songwriter</h2>
+        <h2 class="user-heading">{{ activeUser }} the Songwriter</h2>
         <div class="song-list-container">
           <button @click="handleAddNewSong" class="add-song-button">
             Add new song
@@ -113,6 +113,14 @@ async function handleAddNewSong() {
 
   .user-page-body {
     width: 100vw;
+  }
+
+  .song-list-container {
+    justify-content: center;
+  }
+
+  .user-heading {
+    text-align: center;
   }
 }
 </style>
