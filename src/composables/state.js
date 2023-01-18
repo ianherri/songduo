@@ -22,7 +22,7 @@ export default function useState() {
     const songsColl = collection(firestoreDB, 'songs')
 
     try {
-      await addDoc(songsColl, {
+      const docRef = await addDoc(songsColl, {
         authorId: auth.currentUser.uid,
         authorName: auth.currentUser.displayName,
         title: `${auth.currentUser.displayName.split(' ')[0]}'s new song`,
@@ -36,6 +36,8 @@ export default function useState() {
         ],
         time: new Date(),
       })
+
+      return docRef.id
     } catch (error) {
       console.log(error)
     }

@@ -59,7 +59,11 @@ onMounted(async () => {
 const { addNewSong, returnSongs } = useState()
 
 async function handleAddNewSong() {
-  await addNewSong()
+  const id = await addNewSong()
+
+  router.push({ name: 'editsong', params: { id: id } })
+
+  // actually lets push to the new edit song page
 
   // load all songs again
 
