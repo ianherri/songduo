@@ -5,7 +5,7 @@
       <div v-if="loading" class="loading">loading</div>
       <div v-else class="user-heading">
         <h2 class="user-heading">
-          Write a song, {{ activeUser.split(' ')[0] }}
+          Write a song, {{ activeUserName.split(' ')[0] }}
         </h2>
         <p class="beta-notice">
           Note, this is app is a beta. Do not share sensitive personal data, all
@@ -21,7 +21,8 @@
               :authorId="song.data.authorId"
               :authorName="song.data.authorName"
               :songId="song.id"
-              :time="song.data.time"
+              :time="song.data.timeCreated"
+              :activeUserId="activeUserId"
             />
           </div>
         </div>
@@ -38,7 +39,8 @@ import NavBar from './NavBar.vue'
 import SongButtonComponent from './SongButtonComponent.vue'
 import useState from '../composables/state'
 
-const activeUser = ref('')
+const activeUserName = ref('')
+const activeUserId = ref('')
 const loading = ref(true)
 const songs = ref([])
 const router = useRouter()
@@ -48,7 +50,8 @@ onMounted(async () => {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       loading.value = false
-      activeUser.value = user.displayName
+      activeUserName.value = user.displayName
+      activeUserId.value = user.uid
     } else {
       // User is signed out
       // ...
@@ -59,7 +62,6 @@ onMounted(async () => {
   })
 
   songs.value = await returnSongs()
-  console.log(songs.value)
 })
 
 const { addNewSong, returnSongs } = useState()

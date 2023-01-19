@@ -17,12 +17,18 @@ const props = defineProps({
   songId: String,
   authorId: String,
   authorName: String,
+  activeUserId: String,
 })
 const router = useRouter()
 
 function handleSongClick() {
-  console.log(props.songId)
-  router.push({ name: 'editsong', params: { id: props.songId } })
+  if (props.activeUserId === props.authorId) {
+    router.push({ name: 'editsong', params: { id: props.songId } })
+  } else {
+    // the user is not the author
+    // push them to the suggestion page.
+    router.push({ name: 'suggestsong', params: { id: props.songId } })
+  }
 }
 </script>
 

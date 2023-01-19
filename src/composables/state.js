@@ -12,6 +12,8 @@ import { getAuth } from 'firebase/auth'
 
 import { initFirebase } from '../config/firebase'
 
+import { Song } from '../config/models'
+
 export default function useState() {
   initFirebase()
 
@@ -20,23 +22,30 @@ export default function useState() {
 
     const firestoreDB = getFirestore()
     const songsColl = collection(firestoreDB, 'songs')
+    const song = new Song(
+      [],
+      auth.currentUser.uid,
+      auth.currentUser.displayName,
+      'public',
+      [],
+      `${auth.currentUser.displayName.split(' ')[0]}'s new song`,
+      []
+    )
+
+    song.addStanza(
+      auth.currentUser.uid,
+      auth.currentUser.displayName,
+      'New stanza',
+      'verse',
+      null
+    )
+
+    const songObject = song.toObject()
+
+    console.log(songObject)
 
     try {
-      const docRef = await addDoc(songsColl, {
-        authorId: auth.currentUser.uid,
-        authorName: auth.currentUser.displayName,
-        title: `${auth.currentUser.displayName.split(' ')[0]}'s new song`,
-        stanzas: [
-          {
-            id: 0,
-            text: 'First verse stanza',
-            type: 'Verse',
-            stanza_author: auth.currentUser.displayName,
-          },
-        ],
-        time: new Date(),
-      })
-
+      const docRef = await addDoc(songsColl, songObject)
       return docRef.id
     } catch (error) {
       console.log(error)
