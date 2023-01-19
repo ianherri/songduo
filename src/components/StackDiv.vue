@@ -53,7 +53,7 @@ function moveToTop(index) {
     for (let i = 0; i < bottoms.length; i++) {
       const elementHeight = bottoms[i].offsetHeight
       bottoms[i].style.backgroundColor = colorArr[i]
-      bottoms[i].style.zIndex = -i
+      bottoms[i].style.zIndex = 900 - i
 
       // every other click, expand or contract elements
       if (clickCount.value % 2 === 0) {
@@ -64,6 +64,11 @@ function moveToTop(index) {
         bottoms[i].style.top = `${totalHeight}px`
       }
     }
+
+    document.getElementsByClassName('test-container')[0].style.height = `${
+      totalHeight + 40
+    }px`
+    console.log(totalHeight)
   }, 50)
 }
 </script>
@@ -76,13 +81,13 @@ function moveToTop(index) {
   align-items: center;
   margin-top: 200px;
   color: black;
-  height: auto;
-  width: 400px;
+  background-color: bisque;
+  width: 30px;
 }
 .adjustable-divs {
   top: 0;
   width: 300px;
-  height: 45px;
+  height: 40px;
   transition: top 0.5s ease;
   position: absolute;
 }
