@@ -15,13 +15,13 @@
           <button @click="handleAddNewSong" class="add-song-button">
             Add new song
           </button>
-          <div v-for="song in songs" :key="song.id" class="song-list">
+          <div v-for="song in songsRef" :key="song.id" class="song-list">
             <SongButtonComponent
-              :title="song.data.title"
-              :authorId="song.data.authorId"
-              :authorName="song.data.authorName"
+              :title="song.title"
+              :authorId="song.authorId"
+              :authorName="song.authorName"
               :songId="song.id"
-              :time="song.data.timeCreated"
+              :timeCreated="song.timeCreated"
               :activeUserId="activeUserId"
             />
           </div>
@@ -33,49 +33,35 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { onMounted, ref } from 'vue'
+import { onMounted } from 'vue'
 import NavBar from './NavBar.vue'
 import SongButtonComponent from './SongButtonComponent.vue'
 import useState from '../composables/state'
 
-const activeUserName = ref('')
-const activeUserId = ref('')
-const loading = ref(true)
-const songs = ref([])
 const router = useRouter()
+const {
+  addNewSong,
+  songsRef,
+  loading,
+  activeUser,
+  activeUserId,
+  activeUserName,
+} = useState()
 
 onMounted(async () => {
-  const auth = getAuth()
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      loading.value = false
-      activeUserName.value = user.displayName
-      activeUserId.value = user.uid
-    } else {
-      // User is signed out
-      // ...
-      router.push({
-        name: 'home',
-      })
-    }
-  })
-
-  songs.value = await returnSongs()
+  if (!activeUser) {
+    // User is signed out
+    // ...
+    router.push({
+      name: 'home',
+    })
+  }
 })
-
-const { addNewSong, returnSongs } = useState()
 
 async function handleAddNewSong() {
   const id = await addNewSong()
 
   router.push({ name: 'editsong', params: { id: id } })
-
-  // actually lets push to the new edit song page
-
-  // load all songs again
-
-  songs.value = await returnSongs()
 }
 </script>
 

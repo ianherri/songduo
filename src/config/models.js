@@ -11,22 +11,24 @@ function generateId() {
 
 export class Song {
   constructor(
-    stanzaOrder, // array of stanzaIds
     authorId, // String uid
     authorName, // String
-    visibility, // 'public', 'private', 'shared'
     coauthors, // array of uids
     title, // String
-    stanzas // array of stanza
+    stanzas, // array of stanza
+    stanzaOrder, // array of stanzaIds
+    visibility, // 'public', 'private', 'shared'
+    timeCreated = new Date()
   ) {
-    this.stanzaOrder = stanzaOrder
+    this.id = ''
     this.authorId = authorId
     this.authorName = authorName
-    this.timeCreated = new Date()
-    this.visibility = visibility
     this.coauthors = coauthors
     this.title = title
     this.stanzas = stanzas
+    this.stanzaOrder = stanzaOrder
+    this.visibility = visibility
+    this.timeCreated = timeCreated
   }
 
   addStanza(authorId, authorName, text, type, parent) {
@@ -39,6 +41,10 @@ export class Song {
     ).toObject()
     this.stanzas.push(stanza)
     this.stanzaOrder.push(stanza.id)
+  }
+
+  setId(id) {
+    this.id = id
   }
 
   removeStanza(stanzaId) {
@@ -62,14 +68,34 @@ export class Song {
 }
 
 export class Stanza {
-  constructor(stanzaAuthorId, stanzaAuthorName, text, type, parent) {
+  constructor(
+    stanzaAuthorId,
+    stanzaAuthorName,
+    text,
+    type,
+    parent,
+    children = []
+  ) {
     this.id = generateId() // random id
     this.stanzaAuthorId = stanzaAuthorId // String uid
     this.stanzaAuthorName = stanzaAuthorName // String
     this.text = text // String
     this.type = type // 'verse', 'chorus', 'refrain'
     this.parent = parent // Stanzaid || null
+    this.children = children
     this.timeCreated = new Date()
+  }
+
+  /**
+   *
+   * @param id another stanza id
+   */
+  addParent(id) {
+    this.parent = id
+  }
+
+  addChild(child) {
+    this.children.push(child)
   }
 
   toObject() {
@@ -80,6 +106,7 @@ export class Stanza {
       text: this.text,
       type: this.type,
       parent: this.parent,
+      children: this.children,
       timeCreated: this.timeCreated,
     }
   }

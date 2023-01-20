@@ -31,10 +31,14 @@ button {
 }
 
 textarea {
+  box-sizing: border-box;
   font-family: 'Inter', sans-serif;
   margin: 0;
-  padding: 4px 12px 4px 12px;
+  padding-top: 6px;
+  padding-left: 12px;
   resize: none;
   vertical-align: middle;
+  color: rgb(255, 200, 149);
+  background-color: rgb(24, 24, 24);
 }
 </style>
