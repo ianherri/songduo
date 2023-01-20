@@ -3,7 +3,7 @@
     <h1 class="song-title">{{ props.title }}</h1>
     <h2 class="song-author">by:{{ props.authorName }}</h2>
     <p class="created-date">
-      {{ new Date(props.time.seconds * 1000).toISOString().split('T')[0] }}
+      {{ props.timeCreated.seconds }}
     </p>
   </div>
 </template>
@@ -13,7 +13,7 @@ import { defineProps } from 'vue'
 import { useRouter } from 'vue-router'
 const props = defineProps({
   title: String,
-  time: Date,
+  timeCreated: Date,
   songId: String,
   authorId: String,
   authorName: String,
