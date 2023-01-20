@@ -94,6 +94,10 @@ button {
   margin-top: 12px;
 }
 
+.add-stanza-button {
+  max-width: 600px;
+}
+
 .title-container {
   display: flex;
   flex-direction: row;
@@ -112,8 +116,7 @@ button {
   border: none;
 }
 
-.song-title-input:focus,
-.stanza-input:focus {
+.song-title-input:focus {
   border: none;
   outline: none;
 }
