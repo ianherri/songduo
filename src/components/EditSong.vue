@@ -12,35 +12,18 @@
         ></textarea>
       </div>
       <div class="author-container">Author: {{ songRef.authorName }}</div>
-      <div
-        class="stanza-list-container"
-        v-for="(stanza, index) in songRef.stanzas"
-        :key="stanza.id"
-      >
-        <EditStanza :stanzaId="stanza.id" :index="index" />
-        <!-- <div class="stanza">
-          <textarea
-            oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'
-            class="stanza-input"
-            :class="{ 'odd-number': index % 2 !== 0 }"
-            @keyup.delete="() => removeStanza(stanza.id)"
-            @focus="ct = 0"
-            @dblclick.prevent="() => addChildStanza(stanza.id)"
-            v-model="stanza.text"
-          ></textarea>
-          <div
-            v-for="child in stanza.children"
-            :key="child.id"
-            class="stanza-children"
-          >
-            {{ child.id }}
-          </div>
-        </div> -->
+      <div class="stanza-list-container">
+        <EditStanza
+          v-for="stanza in songRef.stanzas"
+          :key="stanza.id"
+          :stanzaId="stanza.id"
+          :containerId="`container-${stanza.id}`"
+        />
       </div>
-      <button class="add-stanza-button" @click.prevent="addParentStanza">
-        add stanza +
-      </button>
     </form>
+    <button class="add-stanza-button" @click.prevent="addParentStanza">
+      add stanza +
+    </button>
     <button @click.prevent="handleSaveSong">save changes -></button>
     <Transition name="fade">
       <div class="notification-message" v-if="message != ''">{{ message }}</div>
@@ -56,15 +39,7 @@ import { useRoute } from 'vue-router'
 import NavBar from './NavBar.vue'
 import EditStanza from './EditStanza.vue'
 
-const {
-  getSong,
-  saveSong,
-  //  removeStanza,
-  loading,
-  songRef,
-  addParentStanza,
-  // addChildStanza,
-} = useState()
+const { getSong, saveSong, loading, songRef, addParentStanza } = useState()
 const activeUserName = ref({})
 const activeUserId = ref({})
 const route = useRoute()
@@ -132,6 +107,7 @@ button {
   background-color: black;
   font-size: 36px;
   font-weight: 900;
+  height: 60px;
   color: white;
   border: none;
 }
@@ -150,6 +126,9 @@ button {
 }
 
 .stanza-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
   width: 600px;
 }
 

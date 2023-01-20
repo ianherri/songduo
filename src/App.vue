@@ -34,11 +34,13 @@ textarea {
   box-sizing: border-box;
   font-family: 'Inter', sans-serif;
   margin: 0;
+  height: 34px;
   padding-top: 6px;
+  padding-bottom: 6px;
   padding-left: 12px;
   resize: none;
   vertical-align: middle;
-  color: rgb(255, 200, 149);
+  color: rgb(255, 255, 255);
   background-color: rgb(24, 24, 24);
 }
 </style>
