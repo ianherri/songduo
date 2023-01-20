@@ -148,6 +148,8 @@ async function saveSong(song) {
   } catch (error) {
     console.log(error)
   }
+
+  await returnSongs()
 }
 
 // Song: removeStanza(songId,) (stanzaId) (no database)
