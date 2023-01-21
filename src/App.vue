@@ -43,5 +43,12 @@ textarea {
   vertical-align: middle;
   color: rgb(255, 255, 255);
   background-color: rgb(24, 24, 24);
+  border-radius: 0;
+  -webkit-appearance: none;
+  -webkit-border-radius: 0;
+}
+
+textarea[type='search'] {
+  -webkit-appearance: none;
 }
 </style>

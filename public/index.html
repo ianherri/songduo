@@ -11,6 +11,12 @@
       href="https://fonts.googleapis.com/css2?family=Monoton&display=swap"
       rel="stylesheet"
     />
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script>
+      function onSubmit(token) {
+        document.getElementsByClassName('signin-form').submit()
+      }
+    </script>
   </head>
   <body>
     <noscript>
