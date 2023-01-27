@@ -3,15 +3,21 @@
   <div v-if="loading" class="loading-container">loading</div>
   <div v-else class="song-edit-container">
     <form>
+      <div @click.prevent="handleVisibilityToggle" class="visibility-container">
+        <div class="visibility-button">
+          Visibility: {{ songRef.visibility }}
+        </div>
+      </div>
       <div class="title-container">
         <textarea
-          oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'
+          oninput='this.style.height=""; this.style.height = this.scrollHeight + "px"'
           class="song-title-input"
           v-model="songRef.title"
           type="text"
         ></textarea>
       </div>
       <div class="author-container">Author: {{ songRef.authorName }}</div>
+
       <div class="stanza-list-container">
         <EditStanza
           v-for="stanza in songRef.stanzas"
@@ -38,6 +44,7 @@ import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import NavBar from './NavBar.vue'
 import EditStanza from './EditStanza.vue'
+// import draggable from 'vuedraggable'
 
 const { getSong, saveSong, loading, songRef, addParentStanza } = useState()
 const activeUserName = ref({})
@@ -51,6 +58,7 @@ const message = ref('')
 
 onMounted(async () => {
   const auth = getAuth()
+  console.log('wut')
 
   try {
     await getSong(songId)
@@ -72,6 +80,18 @@ async function handleSaveSong() {
     console.log('3 seconds have passed')
     message.value = ''
   }, 2000)
+}
+
+async function handleVisibilityToggle() {
+  if (songRef.value.visibility === 'public') {
+    songRef.value.visibility = 'private'
+  } else if (songRef.value.visibility === 'private') {
+    songRef.value.visibility = 'shared'
+  } else {
+    songRef.value.visibility = 'public'
+  }
+
+  await saveSong(songRef.value)
 }
 </script>
 
@@ -103,6 +123,7 @@ button {
   flex-direction: row;
   flex-wrap: wrap;
   width: 600px;
+  height: auto;
   margin-bottom: 20px;
 }
 
@@ -111,7 +132,7 @@ button {
   background-color: black;
   font-size: 36px;
   font-weight: 900;
-  height: 60px;
+  height: auto;
   color: white;
   border: none;
 }
@@ -124,6 +145,10 @@ button {
 .author-container {
   font-size: 24px;
   font-weight: 900;
+  margin-bottom: 40px;
+  padding-left: 12px;
+}
+.visibility-container {
   margin-bottom: 40px;
   padding-left: 12px;
 }
@@ -140,6 +165,10 @@ button {
   height: 40px;
   background-color: white;
   color: black;
+}
+
+.visibility-button:hover {
+  cursor: pointer;
 }
 
 .notification-message {
