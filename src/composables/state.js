@@ -89,6 +89,9 @@ async function addNewSong() {
   }
 }
 
+// TODO: only return songs that are authored by requestor
+// or that are set to public visibility
+// or that are shared with a group
 async function returnSongs() {
   const firestoreDB = getFirestore()
   const songsColl = collection(firestoreDB, 'songs')

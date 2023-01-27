@@ -5,15 +5,7 @@
       <h3 class="landing-page-logo-subtext">Write songs with your friends</h3>
     </div>
 
-    <button
-      class="g-recaptcha signin-form"
-      data-sitekey="6Lf7zRckAAAAADNa7RD6Zbc20WlEVpP63ScB4p2a"
-      data-callback="onSubmit"
-      data-action="submit"
-      @click="handleSignIn"
-    >
-      start ->
-    </button>
+    <button @click="handleSignIn">start -></button>
     <p class="beta-notice">Google Sign Up Only</p>
   </div>
 </template>
@@ -81,3 +73,8 @@ async function handleSignIn() {
   }
 }
 </style>
+
+<!-- class="g-recaptcha signin-form"
+      data-sitekey="6Lf7zRckAAAAADNa7RD6Zbc20WlEVpP63ScB4p2a"
+      data-callback="onSubmit"
+      data-action="submit" -->

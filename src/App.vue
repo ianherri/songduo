@@ -48,6 +48,12 @@ textarea {
   -webkit-border-radius: 0;
 }
 
+input[type='text'] {
+  color: rgb(255, 255, 255);
+  background-color: rgb(45, 45, 45);
+  border: none;
+}
+
 textarea[type='search'] {
   -webkit-appearance: none;
 }
