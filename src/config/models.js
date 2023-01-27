@@ -18,7 +18,7 @@ export class Song {
     stanzas, // array of stanza
     stanzaOrder, // array of stanzaIds
     visibility, // 'public', 'private', 'shared'
-    timeCreated = new Date()
+    timeCreated = new Date().getTime()
   ) {
     this.id = ''
     this.authorId = authorId
@@ -83,7 +83,7 @@ export class Stanza {
     this.type = type // 'verse', 'chorus', 'refrain'
     this.parent = parent // Stanzaid || null
     this.children = children
-    this.timeCreated = new Date()
+    this.timeCreated = new Date().getTime()
   }
 
   /**

@@ -5,24 +5,26 @@
         @click.prevent="handleAddChildStanza(props.stanzaId)"
         class="test-button"
       >
-        +
+        show suggestions
       </div>
       <textarea
         class="stanza-parent-input"
         :id="props.stanzaId"
         @keyup.delete="() => removeStanza(props.stanzaId)"
-        @click.prevent="() => moveToTop(props.stanzaId)"
+        @click.prevent="() => styleStanzas()"
         v-model="stanza.text"
       ></textarea>
-
-      <textarea
+      <div
         v-for="child in stanza.children"
         :key="child.id"
         :id="child.id"
-        class="stanza-child-input"
-        v-model="child.text"
+        class="stanza-child-container"
       >
-      </textarea>
+        <div class="child-stanza-meta-data">
+          {{ child.stanzaAuthorName }} {{ child.timeCreated }}
+        </div>
+        <textarea class="stanza-child-input" v-model="child.text"> </textarea>
+      </div>
     </div>
   </div>
 </template>
@@ -44,19 +46,20 @@ const childIdList = ref(stanza.value.children.map((child) => child.id))
 
 onMounted(() => {
   clickCount.value = 0
-  moveToTop()
+  styleStanzas()
+
+  console.log(stanza.value)
 })
 
 function handleAddChildStanza(stanzaId) {
   clickCount.value = 0
-  childIdList.value = stanza.value.children.map((child) => child.id)
   addChildStanza(stanzaId)
+  childIdList.value = stanza.value.children.map((child) => child.id)
 
-  // the child is not being added to child id list
-  moveToTop()
+  styleStanzas()
 }
 
-function moveToTop() {
+function styleStanzas() {
   clickCount.value += 1
   let totalHeight = 0
   let totalWidth = 0
@@ -69,16 +72,16 @@ function moveToTop() {
     'rgb(28, 146, 236)',
   ]
 
-  const colorArrDull = [
-    'rgb(110, 35, 14)',
-    'rgb(110, 106, 11)',
-    'rgb(32, 102, 13)',
-    'rgb(13, 79, 84)',
-    'rgb(13, 62, 99)',
-  ]
+  const colorArrDull = ['rgb(103, 103, 103)', 'rgb(61, 61, 61)']
+
+  // main function wrapped in a timeout to allow Vue to add conditional class
+
   setTimeout(() => {
-    // need to get elements by ID so that
+    // variable used for iterating through color array
+    let j = 1
+    // get stanza container by it's id
     const container = document.getElementById(props.containerId)
+    // get children HTML elements by ids
     const children = childIdList.value.map((childId) => {
       return document.getElementById(childId)
     })
@@ -88,11 +91,20 @@ function moveToTop() {
     const parent = document.getElementById(props.stanzaId)
     parent.style.top = '0px'
     parent.style.zIndex = 999
-    let j = 0
+    parent.addEventListener('drag', (event) => {
+      console.log(event)
+    })
+
     for (let i = 0; i < children.length; i++) {
       const elementHeight = children[i].offsetHeight
-      if (j >= colorArrBright.length) {
-        j = 0
+      const childTextArea = Array.from(children[i].children).filter(
+        (elem) => elem.tagName === 'TEXTAREA'
+      )[0]
+      const childMetaData = Array.from(children[i].children).filter(
+        (elem) => elem.tagName === 'DIV'
+      )[0]
+      if (j > colorArrBright.length) {
+        j = 1
         children[i].style.backgroundColor = colorArrBright[j]
         j++
       } else {
@@ -102,16 +114,23 @@ function moveToTop() {
 
       children[i].style.zIndex = 900 - i
 
-      // first click expand or elements
+      // first click expand child elements
       // and dull background colors
       if (clickCount.value % 2 === 0) {
-        totalHeight += elementHeight
+        // totalHeight variable determines how far below parent div element to position the child
+        console.log(elementHeight)
+        totalHeight += 36
         children[i].style.top = `${totalHeight}px`
         children[i].style.width = '100%'
         children[i].style.borderRadius = '0px'
 
-        if (j >= colorArrBright.length) {
-          j = 0
+        childTextArea.style.visibility = ''
+        childMetaData.style.visibility = ''
+        childTextArea.style.height = 'auto'
+        childMetaData.style.height = 'auto'
+
+        if (j >= colorArrDull.length) {
+          j = 1
           children[i].style.backgroundColor = colorArrDull[j]
           j++
         } else {
@@ -126,23 +145,27 @@ function moveToTop() {
         // second click contract elements
       } else {
         container.style.height = `30px`
-        // container.style.height = `${parent.offsetHeight - 12}px`
-        // container.style.top = `${childIdList.value.length * 4}px`
-
         totalHeight = -4
         totalWidth += 18
         children[i].style.top = `${totalHeight}px`
         children[i].style.width = `${totalWidth}px`
         children[i].style.borderRadius = '0px 2px 0px 0px'
+
+        childTextArea.style.visibility = 'hidden'
+        childTextArea.style.height = '0px'
+        childMetaData.style.visibility = 'hidden'
+        childMetaData.style.height = '0px'
       }
     }
   }, 50)
 }
 
-// watch(stanza.value, (oldStanza, newStanza) => {
-//   console.log(oldStanza, newStanza)
-//   moveToTop()
-// })
+// drag stanza
+// add drag listener
+// calculate position of the dragged element (available via event screenX and screenY)
+// find position of other non-dragged elements (available with element.getBoundingClientRect())
+
+//
 </script>
 
 <style scoped>
@@ -153,11 +176,12 @@ function moveToTop() {
   top: 5px;
   right: 6px;
   z-index: 1000;
-  width: 24px;
-  height: 24px;
+  width: auto;
+  padding: 2px;
+  height: auto;
   text-align: center;
   border-radius: 2px;
-  background-color: rgb(0, 0, 0);
+  background-color: rgb(61, 61, 61);
 }
 
 .test-button:hover {
@@ -178,19 +202,33 @@ function moveToTop() {
   width: 100%;
 }
 
+.stanza-child-input {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.child-stanza-meta-data {
+  font-size: 10px;
+  margin: 0;
+}
+
 .stanza-parent-input:focus,
 .stanza-child-input:focus {
   border: none;
   outline: none;
 }
 
-.stanza-child-input {
+.stanza-child-container {
   color: rgb(255, 255, 255);
   box-sizing: border-box;
+  display: grid;
+
+  align-items: baseline;
 }
 
 .stanza-parent-input,
-.stanza-child-input {
+.stanza-child-container {
   position: absolute;
   display: flex;
   flex-direction: row;
