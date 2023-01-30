@@ -1,5 +1,8 @@
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+
+import { initFirestore } from '../config/firebase'
+
 import {
-  getFirestore,
   collection,
   addDoc,
   getDocs,
@@ -7,14 +10,22 @@ import {
   doc,
   getDoc,
   updateDoc,
-} from 'firebase/firestore/lite'
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
-
-import { initFirebase } from '../config/firebase'
+} from 'firebase/firestore'
 
 import { Song, Stanza } from '../config/models'
 
 import { ref, onMounted } from 'vue'
+
+const songRef = ref({})
+const songsRef = ref([])
+const clickCounter = ref(0)
+const loading = ref(true)
+const activeUser = ref({})
+const activeUserId = ref('')
+const activeUserName = ref('')
+
+const firestoreDB = initFirestore()
+const auth = getAuth()
 
 function parseDoc(doc) {
   const {
@@ -43,23 +54,11 @@ function parseDoc(doc) {
   return song
 }
 
-const songRef = ref({})
-const songsRef = ref([])
-const clickCounter = ref(0)
-const loading = ref(true)
-const activeUser = ref({})
-const activeUserId = ref('')
-const activeUserName = ref('')
-initFirebase()
-
 /**
  * @params none
  * @returns songId
  */
 async function addNewSong() {
-  const auth = getAuth()
-
-  const firestoreDB = getFirestore()
   const songsColl = collection(firestoreDB, 'songs')
   const song = new Song(
     auth.currentUser.uid,
@@ -89,8 +88,10 @@ async function addNewSong() {
   }
 }
 
+// TODO: only return songs that are authored by requestor
+// or that are set to public visibility
+// or that are shared with a group
 async function returnSongs() {
-  const firestoreDB = getFirestore()
   const songsColl = collection(firestoreDB, 'songs')
   songsRef.value = []
 
@@ -113,8 +114,6 @@ async function returnSongs() {
  * @returns song reactive obj
  */
 async function getSong(id) {
-  initFirebase()
-  const firestoreDB = getFirestore()
   const songDoc = doc(firestoreDB, 'songs', id)
 
   try {
@@ -134,7 +133,6 @@ async function getSong(id) {
  * @returns void
  */
 async function saveSong(song) {
-  const firestoreDB = getFirestore()
   const songRef = doc(firestoreDB, 'songs', song.id)
   console.log(song)
   try {
@@ -210,8 +208,6 @@ function getStanza(stanzaId) {
 export default function useState() {
   onMounted(async () => {
     if (loading.value) {
-      initFirebase()
-      const auth = getAuth()
       onAuthStateChanged(auth, (user) => {
         if (user) {
           activeUser.value = user

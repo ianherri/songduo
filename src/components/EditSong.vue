@@ -3,11 +3,6 @@
   <div v-if="loading" class="loading-container">loading</div>
   <div v-else class="song-edit-container">
     <form>
-      <div @click.prevent="handleVisibilityToggle" class="visibility-container">
-        <div class="visibility-button">
-          Visibility: {{ songRef.visibility }}
-        </div>
-      </div>
       <div class="title-container">
         <textarea
           oninput='this.style.height=""; this.style.height = this.scrollHeight + "px"'
@@ -17,7 +12,14 @@
         ></textarea>
       </div>
       <div class="author-container">Author: {{ songRef.authorName }}</div>
-
+      <div @click.prevent="handleVisibilityToggle" class="visibility-container">
+        Add collaborators:
+        <input
+          type="text"
+          class="collaborator-input"
+          v-model="songRef.coauthors"
+        />
+      </div>
       <div class="stanza-list-container">
         <EditStanza
           v-for="stanza in songRef.stanzas"
@@ -137,7 +139,8 @@ button {
   border: none;
 }
 
-.song-title-input:focus {
+.song-title-input:focus,
+.collaborator-input:focus {
   border: none;
   outline: none;
 }
