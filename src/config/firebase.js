@@ -1,15 +1,23 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app'
 
-// TODO: figure out this env
+import {
+  connectFirestoreEmulator,
+  initializeFirestore,
+} from 'firebase/firestore'
+
+// firebaseApps previously initialized using initializeApp()
+
 const FIREBASEAPI = process.env.VUE_APP_FIREBASE_API_KEY
+// const env = process.env.SERVER_ENV
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: FIREBASEAPI,
+  apiKey: FIREBASEAI,
   authDomain: 'songduo-5425e.firebaseapp.com',
   projectId: 'songduo-5425e',
   storageBucket: 'songduo-5425e.appspot.com',
@@ -20,7 +28,9 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export function initFirebase() {
-  initializeApp(firebaseConfig)
-}
+  const app = initializeApp(firebaseConfig)
+  const firestoreEmulator = initializeFirestore(app)
 
-export const app = initializeApp(firebaseConfig)
+  connectFirestoreEmulator(firestoreEmulator, 'localhost', 8080)
+  return firestoreEmulator
+}

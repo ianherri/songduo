@@ -3,15 +3,28 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   signOut,
+  connectAuthEmulator,
 } from 'firebase/auth'
 
-import { initFirebase } from '../config/firebase'
+//import { initFirebase } from '../config/firebase'
+
+// export const authEmulator = getAuth()
+//
+import {
+  // initFirestoreEmulator,
+  // firestoreEmulator,
+  authEmulator,
+} from '../config/firebase_emulator'
+
+const env = process.env.SERVER_ENV
 
 export default function useAuth() {
-  initFirebase()
-
+  const auth = getAuth()
+  if (env === 'local') {
+    connectAuthEmulator(authEmulator, 'http://localhost:9099')
+  }
+  console.log(env)
   function doSignOut() {
-    const auth = getAuth()
     try {
       signOut(auth).then(
         () => console.log('signed out'),
@@ -24,7 +37,6 @@ export default function useAuth() {
 
   async function signIn() {
     const provider = new GoogleAuthProvider()
-    const auth = getAuth()
     try {
       const result = await signInWithPopup(auth, provider)
 
