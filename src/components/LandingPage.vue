@@ -18,6 +18,7 @@ const router = useRouter()
 const { signIn } = useAuth()
 
 async function handleSignIn() {
+  console.log('test log')
   const user = await signIn()
 
   if (user) {

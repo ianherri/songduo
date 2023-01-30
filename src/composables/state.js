@@ -1,6 +1,6 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
-import { initFirebase } from '../config/firebase'
+import { initFirestore } from '../config/firebase'
 
 import {
   collection,
@@ -10,7 +10,7 @@ import {
   doc,
   getDoc,
   updateDoc,
-} from 'firebase/firestore/lite'
+} from 'firebase/firestore'
 
 import { Song, Stanza } from '../config/models'
 
@@ -24,7 +24,7 @@ const activeUser = ref({})
 const activeUserId = ref('')
 const activeUserName = ref('')
 
-const firestoreDB = initFirebase()
+const firestoreDB = initFirestore()
 const auth = getAuth()
 
 function parseDoc(doc) {
