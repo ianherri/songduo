@@ -6,17 +6,19 @@ import {
   connectAuthEmulator,
 } from 'firebase/auth'
 
-import { initFirebase } from '../config/firebase'
+// import { initFirebase } from '../config/firebase'
 
 const env = process.env.SERVER_ENV
 
 export default function useAuth() {
-  initFirebase()
+  // const app = initFirebase()
   const auth = getAuth()
+  // const auth = initializeAuth(app)
 
   if (env === 'local') {
     connectAuthEmulator(auth, 'http://localhost:9099')
   }
+
   function doSignOut() {
     try {
       signOut(auth).then(
@@ -61,5 +63,6 @@ export default function useAuth() {
   return {
     doSignOut,
     signIn,
+    auth,
   }
 }

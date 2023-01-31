@@ -29,5 +29,6 @@ export function initFirestore() {
 }
 
 export function initFirebase() {
-  initializeApp(firebaseConfig)
+  const app = initializeApp(firebaseConfig)
+  return app
 }

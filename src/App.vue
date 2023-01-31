@@ -15,10 +15,13 @@ body {
 }
 
 #app {
-  font-family: Inter, Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 button {
   font-family: 'Inter', sans-serif;

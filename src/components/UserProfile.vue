@@ -12,9 +12,7 @@
           content published is available to all other users.
         </p>
         <div class="song-list-container">
-          <button @click="handleAddNewSong" class="add-song-button">
-            Add new song
-          </button>
+          <button @click="handleAddNewSong" class="add-song-button">+</button>
           <div v-for="song in songsRef" :key="song.id" class="song-list">
             <SongButtonComponent
               :title="song.title"
@@ -108,6 +106,7 @@ async function handleAddNewSong() {
   height: 140px;
   width: 140px;
   border: 2px solid white;
+  border-radius: 12px;
 }
 
 @media (max-width: 800px) {

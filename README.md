@@ -8,9 +8,19 @@ npm install
 
 ### Compiles and hot-reloads for development
 
+in order to use firestore emulator (and not create bad data in prod firestore), first run:
+
+```
+npm run dev
+```
+
+this will spin up a local firestore emulator database, then run:
+
 ```
 npm run serve
 ```
+
+which will serve the client at localhost:3000
 
 ### Lints and fixes files
 
@@ -33,5 +43,5 @@ npm run build
 Then, push to firebase
 
 ```
-firebase deploy --only hosting
+firebase deploy
 ```
