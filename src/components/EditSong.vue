@@ -2,6 +2,9 @@
   <NavBar />
   <div v-if="loading" class="loading-container">loading</div>
   <div v-else class="song-edit-container">
+    <div class="share-container">
+      <ShareForm />
+    </div>
     <form>
       <div class="title-container">
         <textarea
@@ -12,14 +15,7 @@
         ></textarea>
       </div>
       <div class="author-container">Author: {{ songRef.authorName }}</div>
-      <div @click.prevent="handleVisibilityToggle" class="visibility-container">
-        Add collaborators:
-        <input
-          type="text"
-          class="collaborator-input"
-          v-model="songRef.coauthors"
-        />
-      </div>
+
       <div class="stanza-list-container">
         <EditStanza
           v-for="stanza in songRef.stanzas"
@@ -46,6 +42,7 @@ import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import NavBar from './NavBar.vue'
 import EditStanza from './EditStanza.vue'
+import ShareForm from './ShareForm.vue'
 // import draggable from 'vuedraggable'
 
 const { getSong, saveSong, loading, songRef, addParentStanza } = useState()
@@ -84,32 +81,41 @@ async function handleSaveSong() {
   }, 2000)
 }
 
-async function handleVisibilityToggle() {
-  if (songRef.value.visibility === 'public') {
-    songRef.value.visibility = 'private'
-  } else if (songRef.value.visibility === 'private') {
-    songRef.value.visibility = 'shared'
-  } else {
-    songRef.value.visibility = 'public'
-  }
+// async function handleVisibilityToggle() {
+//   if (songRef.value.visibility === 'public') {
+//     songRef.value.visibility = 'private'
+//   } else if (songRef.value.visibility === 'private') {
+//     songRef.value.visibility = 'shared'
+//   } else {
+//     songRef.value.visibility = 'public'
+//   }
 
-  await saveSong(songRef.value)
-}
+//   await saveSong(songRef.value)
+// }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .song-edit-container {
-  padding-top: 60px;
+  padding-top: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 24px;
+  width: 600px;
 }
 
-label {
-  width: 24px;
+.share-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: end;
+  width: 600px;
 }
+
+/* label {
+  width: 24px;
+} */
 
 button {
   font-size: 16px;
@@ -130,6 +136,7 @@ button {
 }
 
 .song-title-input {
+  font-family: 'Roboto', sans-serif;
   width: 100%;
   background-color: black;
   font-size: 36px;
@@ -151,10 +158,6 @@ button {
   margin-bottom: 40px;
   padding-left: 12px;
 }
-.visibility-container {
-  margin-bottom: 40px;
-  padding-left: 12px;
-}
 
 .stanza-list-container {
   display: flex;
@@ -170,10 +173,6 @@ button {
   color: black;
 }
 
-.visibility-button:hover {
-  cursor: pointer;
-}
-
 .notification-message {
   color: rgb(226, 134, 14);
   font-weight: 900;
@@ -181,18 +180,24 @@ button {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s;
+  transition: all 0.5s;
+  opacity: 1;
 }
+
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
+  transition: all 0.5s;
 }
 
 @media (max-width: 800px) {
-  .stanza-list-container {
+  .stanza-list-container,
+  .share-form,
+  .title-container,
+  .share-container {
     width: 98vw;
   }
 
-  .title-container {
+  .song-edit-container {
     width: 98vw;
   }
 }

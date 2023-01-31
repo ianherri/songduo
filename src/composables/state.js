@@ -1,6 +1,7 @@
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { onAuthStateChanged } from 'firebase/auth'
 
 import { initFirestore } from '../config/firebase'
+import useAuth from './auth'
 
 import {
   collection,
@@ -25,7 +26,8 @@ const activeUserId = ref('')
 const activeUserName = ref('')
 
 const firestoreDB = initFirestore()
-const auth = getAuth()
+
+const { auth } = useAuth()
 
 function parseDoc(doc) {
   const {

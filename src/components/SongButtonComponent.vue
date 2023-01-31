@@ -1,9 +1,9 @@
 <template>
   <div @click="handleSongClick" class="song-container">
     <h1 class="song-title">{{ props.title }}</h1>
-    <h2 class="song-author">by:{{ props.authorName }}</h2>
+    <h2 class="song-author">{{ props.authorName }}</h2>
     <p class="created-date">
-      {{ props.timeCreated.seconds }}
+      {{ new Date(props.timeCreated).toLocaleString('en-US', options) }}
     </p>
   </div>
 </template>
@@ -20,6 +20,12 @@ const props = defineProps({
   activeUserId: String,
 })
 const router = useRouter()
+
+const options = {
+  weekday: 'short',
+  month: 'short',
+  day: 'numeric',
+}
 
 function handleSongClick() {
   if (props.activeUserId === props.authorId) {
@@ -45,6 +51,7 @@ function handleSongClick() {
   background-color: white;
   color: black;
   cursor: pointer;
+  border-radius: 12px;
 }
 
 .song-title {
