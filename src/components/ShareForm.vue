@@ -47,7 +47,7 @@ import useState from '../composables/state'
 const { songRef, saveSong } = useState()
 
 const showForm = ref(false)
-const isPublic = ref(true)
+const isPublic = ref(songRef.value.visibility === 'public')
 const collaborator = ref('')
 
 async function handleVisibility() {
