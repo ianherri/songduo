@@ -135,10 +135,10 @@ async function getSong(id) {
  * @returns void
  */
 async function saveSong(song) {
-  const songRef = doc(firestoreDB, 'songs', song.id)
+  const songDoc = doc(firestoreDB, 'songs', song.id)
   console.log(song)
   try {
-    await updateDoc(songRef, {
+    await updateDoc(songDoc, {
       title: song.title,
       stanzas: song.stanzas,
       stanzaOrder: song.stanzaOrder,
@@ -156,14 +156,17 @@ async function saveSong(song) {
 
 function removeStanza(stanzaId) {
   clickCounter.value += 1
+
   if (
     songRef.value.stanzas.filter((stanza) => stanza.id === stanzaId)[0].text ===
       '' &&
     clickCounter.value > 1
   ) {
-    songRef.value.stanzas = songRef.value.stanzas.filter(
-      (stanza) => stanza.id != stanzaId
-    )
+    // create new stanza then remove it?
+    const song = createSong(songRef.value)
+    song.removeStanza(stanzaId)
+    console.log(song)
+    songRef.value = song.toObject()
     clickCounter.value = 0
   }
 }
@@ -207,6 +210,63 @@ function getStanza(stanzaId) {
   return stanza
 }
 
+// return new Song from songRef object
+function createSong(song) {
+  const {
+    authorId,
+    authorName,
+    coauthors,
+    title,
+    stanzas,
+    stanzaOrder,
+    visibility,
+    timeCreated,
+  } = song
+
+  return new Song(
+    authorId,
+    authorName,
+    coauthors,
+    title,
+    stanzas,
+    stanzaOrder,
+    visibility,
+    timeCreated
+  )
+}
+
+function handleCache(songId) {
+  const songCache = []
+  const songCacheKey = 'cache-' + songId
+  songCache.push(songRef.value)
+  const sessionCache = sessionStorage.getItem(songCacheKey)
+
+  if (sessionCache === null) {
+    sessionStorage.setItem(songCacheKey, JSON.stringify(songCache))
+  }
+  if (event.key === 'z' && event.ctrlKey && sessionCache != null) {
+    const newState = JSON.parse(sessionCache)
+    songRef.value = newState[0]
+    console.log(songRef.value)
+    const finalCache = JSON.parse(sessionCache)
+    finalCache.shift()
+    sessionStorage.setItem(songCacheKey, JSON.stringify(finalCache))
+  } else {
+    const parsedSessionCache = JSON.parse(sessionCache)
+    if (parsedSessionCache.length > 10) {
+      const newCache = songCache.concat(...parsedSessionCache)
+      // remove one save element from the beginning of the array
+      newCache.splice()
+      sessionStorage.setItem(songCacheKey, JSON.stringify(newCache))
+    } else {
+      const newCache = songCache.concat(...parsedSessionCache)
+      sessionStorage.setItem(songCacheKey, JSON.stringify(newCache))
+    }
+  }
+}
+
+// state function, whenever invoked it calls return songs which sets the value of
+// songRef to the songs in the database
 export default function useState() {
   onMounted(async () => {
     if (loading.value) {
@@ -217,7 +277,6 @@ export default function useState() {
           activeUserId.value = user.uid
         }
       })
-
       await returnSongs()
       loading.value = false
     }
@@ -237,5 +296,6 @@ export default function useState() {
     activeUserId,
     activeUserName,
     getStanza,
+    handleCache,
   }
 }

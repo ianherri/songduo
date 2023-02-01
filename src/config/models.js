@@ -18,7 +18,7 @@ export class Song {
     stanzas, // array of stanza
     stanzaOrder, // array of stanzaIds
     visibility, // 'public', 'private', 'shared'
-    timeCreated = new Date().getTime()
+    timeCreated = new Date().getTime() // default value will be used if none provided
   ) {
     this.id = ''
     this.authorId = authorId
@@ -48,7 +48,11 @@ export class Song {
   }
 
   removeStanza(stanzaId) {
-    this.stanzas.filter((stanza) => stanza.id != stanzaId)
+    this.stanzas = this.stanzas.filter((stanza) => stanza.id != stanzaId)
+  }
+
+  removeChildStanza(stanzaId, childStanzaId) {
+    console.log(stanzaId, childStanzaId)
   }
 
   toObject() {

@@ -41,7 +41,6 @@ textarea {
   height: 34px;
   padding-top: 6px;
   padding-bottom: 6px;
-  padding-left: 12px;
   resize: none;
   vertical-align: middle;
   color: rgb(255, 255, 255);
