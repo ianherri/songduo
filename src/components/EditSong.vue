@@ -1,7 +1,7 @@
 <template>
   <NavBar />
   <div v-if="loading" class="loading-container">loading</div>
-  <div v-else class="song-edit-container">
+  <div v-else class="song-edit-container" @keyup="() => handleCache(songId)">
     <div class="share-container">
       <ShareForm />
     </div>
@@ -21,6 +21,7 @@
           v-for="stanza in songRef.stanzas"
           :key="stanza.id"
           :stanzaId="stanza.id"
+          :songId="songId"
           :containerId="`container-${stanza.id}`"
         />
       </div>
@@ -45,7 +46,8 @@ import EditStanza from './EditStanza.vue'
 import ShareForm from './ShareForm.vue'
 // import draggable from 'vuedraggable'
 
-const { getSong, saveSong, loading, songRef, addParentStanza } = useState()
+const { getSong, saveSong, loading, songRef, addParentStanza, handleCache } =
+  useState()
 const activeUserName = ref({})
 const activeUserId = ref({})
 const route = useRoute()
@@ -57,7 +59,6 @@ const message = ref('')
 
 onMounted(async () => {
   const auth = getAuth()
-  console.log('wut')
 
   try {
     await getSong(songId)
@@ -76,21 +77,41 @@ async function handleSaveSong() {
   message.value = 'Changes saved'
 
   setTimeout(() => {
-    console.log('3 seconds have passed')
     message.value = ''
   }, 2000)
 }
 
-// async function handleVisibilityToggle() {
-//   if (songRef.value.visibility === 'public') {
-//     songRef.value.visibility = 'private'
-//   } else if (songRef.value.visibility === 'private') {
-//     songRef.value.visibility = 'shared'
-//   } else {
-//     songRef.value.visibility = 'public'
-//   }
+// // function to write to sessionStorage cache
+// function handleCache() {
+//   const songCache = []
+//   // songRef is not being updated
+//   songCache.push(songRef.value)
 
-//   await saveSong(songRef.value)
+//   // TODO : fix go back in state
+//   const sessionCache = sessionStorage.getItem(songCacheKey)
+
+//   if (sessionCache === null) {
+//     sessionStorage.setItem(songCacheKey, JSON.stringify(songCache))
+//   }
+//   if (event.key === 'z' && sessionCache != null) {
+//     const newState = JSON.parse(sessionCache)
+//     songRef.value = newState[0]
+//     console.log(songRef.value)
+//     const finalCache = JSON.parse(sessionCache)
+//     finalCache.shift()
+//     sessionStorage.setItem(songCacheKey, JSON.stringify(finalCache))
+//   } else {
+//     const parsedSessionCache = JSON.parse(sessionCache)
+//     if (parsedSessionCache.length > 10) {
+//       const newCache = songCache.concat(...parsedSessionCache)
+//       // remove one save element from the beginning of the array
+//       newCache.splice()
+//       sessionStorage.setItem(songCacheKey, JSON.stringify(newCache))
+//     } else {
+//       const newCache = songCache.concat(...parsedSessionCache)
+//       sessionStorage.setItem(songCacheKey, JSON.stringify(newCache))
+//     }
+//   }
 // }
 </script>
 
@@ -156,13 +177,12 @@ button {
   font-size: 24px;
   font-weight: 900;
   margin-bottom: 40px;
-  padding-left: 12px;
 }
 
 .stanza-list-container {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 12px;
   width: 600px;
 }
 
