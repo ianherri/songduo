@@ -1,7 +1,7 @@
 <template>
   <NavBar />
   <div v-if="loading" class="loading-container">loading</div>
-  <div v-else class="song-edit-container" @keyup="() => handleCache(songId)">
+  <div v-else class="song-edit-container">
     <div class="share-container">
       <ShareForm />
     </div>
@@ -46,8 +46,7 @@ import EditStanza from './EditStanza.vue'
 import ShareForm from './ShareForm.vue'
 // import draggable from 'vuedraggable'
 
-const { getSong, saveSong, loading, songRef, addParentStanza, handleCache } =
-  useState()
+const { getSong, saveSong, loading, songRef, addParentStanza } = useState()
 const activeUserName = ref({})
 const activeUserId = ref({})
 const route = useRoute()
@@ -72,6 +71,7 @@ onMounted(async () => {
 })
 
 async function handleSaveSong() {
+  console.log(songRef.value)
   await saveSong(songRef.value)
 
   message.value = 'Changes saved'
@@ -80,39 +80,6 @@ async function handleSaveSong() {
     message.value = ''
   }, 2000)
 }
-
-// // function to write to sessionStorage cache
-// function handleCache() {
-//   const songCache = []
-//   // songRef is not being updated
-//   songCache.push(songRef.value)
-
-//   // TODO : fix go back in state
-//   const sessionCache = sessionStorage.getItem(songCacheKey)
-
-//   if (sessionCache === null) {
-//     sessionStorage.setItem(songCacheKey, JSON.stringify(songCache))
-//   }
-//   if (event.key === 'z' && sessionCache != null) {
-//     const newState = JSON.parse(sessionCache)
-//     songRef.value = newState[0]
-//     console.log(songRef.value)
-//     const finalCache = JSON.parse(sessionCache)
-//     finalCache.shift()
-//     sessionStorage.setItem(songCacheKey, JSON.stringify(finalCache))
-//   } else {
-//     const parsedSessionCache = JSON.parse(sessionCache)
-//     if (parsedSessionCache.length > 10) {
-//       const newCache = songCache.concat(...parsedSessionCache)
-//       // remove one save element from the beginning of the array
-//       newCache.splice()
-//       sessionStorage.setItem(songCacheKey, JSON.stringify(newCache))
-//     } else {
-//       const newCache = songCache.concat(...parsedSessionCache)
-//       sessionStorage.setItem(songCacheKey, JSON.stringify(newCache))
-//     }
-//   }
-// }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

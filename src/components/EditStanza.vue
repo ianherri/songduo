@@ -1,19 +1,30 @@
 <template>
-  <div class="stanza-container" :id="props.containerId">
+  <div
+    draggable="true"
+    @dragstart="() => handleReposition(props.stanzaId)"
+    @dragover.prevent
+    @dragenter.prevent
+    @drop="handleDrop"
+    class="stanza-container"
+    :id="props.stanzaId"
+  >
     <div class="stanza-parent-container">
-      <div class="stanza-parent-input-container">
-        <textarea
+      <form
+        @submit.prevent="addParentStanza"
+        class="stanza-parent-input-container"
+      >
+        <input
           class="stanza-parent-input"
           :id="props.stanzaId"
           @keyup.delete="() => removeStanza(props.stanzaId)"
           @keyup="() => handleKeyUp(props.stanzaId)"
           v-model="stanza.text"
-        ></textarea>
+        />
         <div class="child-stanza-meta-data">
           {{ stanza.stanzaAuthorName }}
           {{ new Date(stanza.timeCreated).toLocaleString('en-US', options) }}
         </div>
-      </div>
+      </form>
     </div>
     <div
       v-for="child in stanza.children"
@@ -33,7 +44,14 @@
 <script setup>
 import useState from '../composables/state'
 import { defineProps, ref, onMounted, watch } from 'vue'
-const { removeStanza, getStanza, addChildStanza, songRef } = useState()
+const {
+  removeStanza,
+  getStanza,
+  addChildStanza,
+  songRef,
+  addParentStanza,
+  orderStanzas,
+} = useState()
 
 const props = defineProps({
   stanzaId: String,
@@ -53,8 +71,12 @@ const stanza = ref(getStanza(props.stanzaId))
 onMounted(() => {})
 
 function handleKeyUp(stanzaId) {
+  event.preventDefault()
   if (event.key === '/') {
     addChildStanza(stanzaId)
+  }
+  if (event.key === 'Enter') {
+    console.log(event.key)
   }
 }
 
@@ -66,6 +88,26 @@ watch(songRef.value, () => {
 // calculate position of the dragged element (available via event screenX and screenY)
 // find position of other non-dragged elements (available with element.getBoundingClientRect())
 
+function handleReposition(id) {
+  event.dataTransfer.dropEffect = 'move'
+  event.dataTransfer.effectAllowed = 'move'
+  event.dataTransfer.setData('stanzaId', id)
+}
+
+function handleDrop() {
+  const draggedId = event.dataTransfer.getData('stanzaId')
+  const targetId = event.currentTarget.id
+  const newStanzaOrder = songRef.value.stanzaOrder.filter(
+    (stanzaId) => stanzaId !== draggedId
+  )
+
+  const targetIndex = songRef.value.stanzaOrder.indexOf(targetId)
+  newStanzaOrder.splice(targetIndex, 0, draggedId)
+
+  songRef.value.stanzaOrder = newStanzaOrder
+  orderStanzas()
+}
+
 //
 </script>
 
@@ -76,6 +118,16 @@ watch(songRef.value, () => {
   flex-direction: column;
   align-items: center;
   transition: all 1s ease;
+  cursor: move;
+  /* cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab; */
+}
+
+.stanza-container:active {
+  cursor: grabbing;
+  /* cursor: -moz-grabbing;
+  cursor: -webkit-grabbing; */
 }
 .stanza-parent-container {
   position: relative;

@@ -83,6 +83,7 @@ async function addNewSong() {
   const songObject = song.toObject()
 
   try {
+    console.log(songObject)
     const docRef = await addDoc(songsColl, songObject)
     return docRef.id
   } catch (error) {
@@ -162,17 +163,23 @@ function removeStanza(stanzaId) {
       '' &&
     clickCounter.value > 1
   ) {
-    // create new stanza then remove it?
     const song = createSong(songRef.value)
+    console.log(songRef.value)
     song.removeStanza(stanzaId)
-    console.log(song)
     songRef.value = song.toObject()
+    console.log(songRef.value)
     clickCounter.value = 0
+
+    // only order if there
+    if (songRef.value.stanzas.length > 1) {
+      orderStanzas()
+    }
   }
 }
 
 // Song: addParentStanza (no database)
 function addParentStanza() {
+  event.preventDefault()
   const stanza = new Stanza(
     activeUserId.value,
     activeUserName.value,
@@ -183,6 +190,23 @@ function addParentStanza() {
 
   const stanzaObj = stanza.toObject()
   songRef.value.stanzas.push(stanzaObj)
+  songRef.value.stanzaOrder.push(stanzaObj.id)
+  orderStanzas()
+}
+
+// reorder the stanzas according to the ordering in stanzaorder
+// should modify the songRef.value.stanzas array
+
+function orderStanzas() {
+  const stanzas = songRef.value.stanzas
+  const stanzaOrder = songRef.value.stanzaOrder
+
+  const newStanzas = []
+  for (let i = 0; i < stanzas.length; i++) {
+    newStanzas.push(stanzas.filter((stanza) => stanza.id === stanzaOrder[i])[0])
+  }
+  console.log('new', newStanzas)
+  songRef.value.stanzas = newStanzas
 }
 
 // Stanza: addChildStanza(id) (no database)
@@ -213,6 +237,7 @@ function getStanza(stanzaId) {
 // return new Song from songRef object
 function createSong(song) {
   const {
+    id,
     authorId,
     authorName,
     coauthors,
@@ -223,7 +248,9 @@ function createSong(song) {
     timeCreated,
   } = song
 
-  return new Song(
+  console.log('createsong', coauthors)
+
+  const newSong = new Song(
     authorId,
     authorName,
     coauthors,
@@ -233,8 +260,13 @@ function createSong(song) {
     visibility,
     timeCreated
   )
+
+  newSong.setId(id)
+  console.log(newSong)
+  return newSong
 }
 
+// update state to handle ctrl + z for each song
 function handleCache(songId) {
   const songCache = []
   const songCacheKey = 'cache-' + songId
@@ -244,22 +276,20 @@ function handleCache(songId) {
   if (sessionCache === null) {
     sessionStorage.setItem(songCacheKey, JSON.stringify(songCache))
   }
-  if (event.key === 'z' && event.ctrlKey && sessionCache != null) {
-    const newState = JSON.parse(sessionCache)
-    songRef.value = newState[0]
-    console.log(songRef.value)
-    const finalCache = JSON.parse(sessionCache)
-    finalCache.shift()
-    sessionStorage.setItem(songCacheKey, JSON.stringify(finalCache))
+  if (event.key === 'z' && event.ctrlKey) {
+    let newState = JSON.parse(sessionCache)
+    newState.shift()
+    // songRef.value = newState[-1]
+    sessionStorage.setItem(songCacheKey, JSON.stringify(newState))
   } else {
-    const parsedSessionCache = JSON.parse(sessionCache)
-    if (parsedSessionCache.length > 10) {
-      const newCache = songCache.concat(...parsedSessionCache)
+    let newState = JSON.parse(sessionCache)
+    if (newState.length > 10) {
+      let newCache = songCache.concat(...newState)
       // remove one save element from the beginning of the array
-      newCache.splice()
+      newCache.pop()
       sessionStorage.setItem(songCacheKey, JSON.stringify(newCache))
     } else {
-      const newCache = songCache.concat(...parsedSessionCache)
+      let newCache = songCache.concat(...newState)
       sessionStorage.setItem(songCacheKey, JSON.stringify(newCache))
     }
   }
@@ -297,5 +327,6 @@ export default function useState() {
     activeUserName,
     getStanza,
     handleCache,
+    orderStanzas,
   }
 }
