@@ -34,7 +34,8 @@ button {
   cursor: pointer;
 }
 
-textarea {
+textarea,
+input {
   box-sizing: border-box;
   font-family: 'Inter', sans-serif;
   margin: 0;
@@ -48,12 +49,6 @@ textarea {
   border-radius: 0;
   -webkit-appearance: none;
   -webkit-border-radius: 0;
-}
-
-input[type='text'] {
-  color: rgb(255, 255, 255);
-  background-color: rgb(45, 45, 45);
-  border: none;
 }
 
 textarea[type='search'] {

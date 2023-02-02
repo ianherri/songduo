@@ -39,6 +39,7 @@ export class Song {
       type,
       parent
     ).toObject()
+
     this.stanzas.push(stanza)
     this.stanzaOrder.push(stanza.id)
   }
@@ -47,8 +48,10 @@ export class Song {
     this.id = id
   }
 
+  // remove stanza from stanzas array and stanza id from stanzaOrder array
   removeStanza(stanzaId) {
     this.stanzas = this.stanzas.filter((stanza) => stanza.id != stanzaId)
+    this.stanzaOrder = this.stanzaOrder.filter((id) => id != stanzaId)
   }
 
   removeChildStanza(stanzaId, childStanzaId) {
@@ -57,6 +60,7 @@ export class Song {
 
   toObject() {
     return {
+      id: this.id,
       stanzaOrder: this.stanzaOrder,
       authorId: this.authorId, // String uid
       authorName: this.authorName, // String
@@ -64,7 +68,7 @@ export class Song {
       visibility: this.visibility, // 'public', 'private', 'shared'
       coauthors: this.coauthors, // array of uids
       title: this.title, // String
-      stanzas: this.stanzas,
+      stanzas: this.stanzas, //
     }
   }
 
