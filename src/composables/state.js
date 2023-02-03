@@ -153,6 +153,16 @@ async function saveSong(song) {
   await returnSongs()
 }
 
+function updateStanzaOrder() {
+  const newStanzaOrder = Array.from(
+    document.getElementsByClassName('stanza-container')
+  ).map((elem) => {
+    return elem.id
+  })
+
+  songRef.value.stanzaOrder = newStanzaOrder
+}
+
 // Song: removeStanza(songId,) (stanzaId) (no database)
 
 function removeStanza(stanzaId) {
@@ -187,7 +197,6 @@ function addParentStanza() {
     'verse',
     null
   )
-
   const stanzaObj = stanza.toObject()
   songRef.value.stanzas.push(stanzaObj)
   songRef.value.stanzaOrder.push(stanzaObj.id)
@@ -328,5 +337,6 @@ export default function useState() {
     getStanza,
     handleCache,
     orderStanzas,
+    updateStanzaOrder,
   }
 }
