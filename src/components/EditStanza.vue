@@ -1,13 +1,5 @@
 <template>
-  <div
-    draggable="true"
-    @dragstart="() => handleReposition(props.stanzaId)"
-    @dragover.prevent
-    @dragenter.prevent
-    @drop="handleDrop"
-    class="stanza-container"
-    :id="props.stanzaId"
-  >
+  <div class="stanza-container" :id="props.stanzaId">
     <div class="stanza-parent-container">
       <form
         @submit.prevent="addParentStanza"
@@ -22,6 +14,7 @@
         />
         <div class="child-stanza-meta-data">
           {{ stanza.stanzaAuthorName }}
+          {{ stanza.id }}
           {{ new Date(stanza.timeCreated).toLocaleString('en-US', options) }}
         </div>
       </form>
@@ -43,15 +36,9 @@
 
 <script setup>
 import useState from '../composables/state'
-import { defineProps, ref, onMounted, watch } from 'vue'
-const {
-  removeStanza,
-  getStanza,
-  addChildStanza,
-  songRef,
-  addParentStanza,
-  orderStanzas,
-} = useState()
+import { defineProps, ref, watch } from 'vue'
+const { removeStanza, getStanza, addChildStanza, songRef, addParentStanza } =
+  useState()
 
 const props = defineProps({
   stanzaId: String,
@@ -68,8 +55,6 @@ const options = {
 
 const stanza = ref(getStanza(props.stanzaId))
 
-onMounted(() => {})
-
 function handleKeyUp(stanzaId) {
   event.preventDefault()
   if (event.key === '/') {
@@ -83,42 +68,20 @@ function handleKeyUp(stanzaId) {
 watch(songRef.value, () => {
   stanza.value = getStanza(props.stanzaId)
 })
-// drag stanza
-// add drag listener
-// calculate position of the dragged element (available via event screenX and screenY)
-// find position of other non-dragged elements (available with element.getBoundingClientRect())
-
-function handleReposition(id) {
-  event.dataTransfer.dropEffect = 'move'
-  event.dataTransfer.effectAllowed = 'move'
-  event.dataTransfer.setData('stanzaId', id)
-}
-
-function handleDrop() {
-  const draggedId = event.dataTransfer.getData('stanzaId')
-  const targetId = event.currentTarget.id
-  const newStanzaOrder = songRef.value.stanzaOrder.filter(
-    (stanzaId) => stanzaId !== draggedId
-  )
-
-  const targetIndex = songRef.value.stanzaOrder.indexOf(targetId)
-  newStanzaOrder.splice(targetIndex, 0, draggedId)
-
-  songRef.value.stanzaOrder = newStanzaOrder
-  orderStanzas()
-}
 
 //
 </script>
 
 <style scoped>
 .stanza-container {
+  box-sizing: border-box;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   transition: all 1s ease;
   cursor: move;
+  padding-bottom: 12px;
   /* cursor: grab;
   cursor: -moz-grab;
   cursor: -webkit-grab; */
@@ -194,6 +157,12 @@ img {
   outline: none;
 }
 
+.dragging {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
 @media (max-width: 800px) {
   .stanza-parent-input,
   .stanza-child-container {
@@ -202,4 +171,44 @@ img {
 }
 </style>
 
-<!-- oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"' -->
+<!-- Old homemade dragging code... -->
+
+<!-- <div
+    draggable="true"
+    @dragstart="() => handleReposition(props.stanzaId)"
+    @dragover.prevent
+    @dragenter.prevent
+    @drop="handleDrop"
+    @touchmove="handleDrag"
+    @touchend="handleDragEnd"
+    class="stanza-container"
+    :id="props.stanzaId"
+  > -->
+
+<!-- function handleReposition(id) {
+  event.dataTransfer.dropEffect = 'move'
+  event.dataTransfer.effectAllowed = 'move'
+  event.dataTransfer.setData('stanzaId', id)
+}
+
+function handleDrop() {
+  console.log('handle drop triggered')
+  const draggedId = event.dataTransfer.getData('stanzaId')
+  const targetId = event.currentTarget.id
+  const newStanzaOrder = songRef.value.stanzaOrder.filter(
+    (stanzaId) => stanzaId !== draggedId
+  )
+
+  const targetIndex = songRef.value.stanzaOrder.indexOf(targetId)
+  newStanzaOrder.splice(targetIndex, 0, draggedId)
+
+  songRef.value.stanzaOrder = newStanzaOrder
+  orderStanzas()
+}
+
+function handleDrag() {
+  console.log('drag', event.target.id)
+}
+function handleDragEnd() {
+  console.log('end', event)
+} -->

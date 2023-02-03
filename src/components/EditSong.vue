@@ -17,13 +17,19 @@
       <div class="author-container">Author: {{ songRef.authorName }}</div>
 
       <div class="stanza-list-container">
-        <EditStanza
-          v-for="stanza in songRef.stanzas"
-          :key="stanza.id"
-          :stanzaId="stanza.id"
-          :songId="songId"
-          :containerId="`container-${stanza.id}`"
-        />
+        <draggable :list="songRef.stanzas" @change="updateStanzaOrder">
+          <EditStanza
+            v-for="stanza in songRef.stanzas"
+            :key="stanza.id"
+            :stanzaId="stanza.id"
+            :songId="songId"
+            :containerId="`container-${stanza.id}`"
+            :item="stanza.id"
+          />
+          <!-- <div v-for="stanza in songRef.stanzas" :key="stanza.id">
+            {{ stanza.id }}
+          </div> -->
+        </draggable>
       </div>
     </form>
     <button class="add-stanza-button" @click.prevent="addParentStanza">
@@ -42,18 +48,25 @@ import { getAuth } from 'firebase/auth'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import NavBar from './NavBar.vue'
-import EditStanza from './EditStanza.vue'
+// import EditStanza from './EditStanza.vue'
 import ShareForm from './ShareForm.vue'
-// import draggable from 'vuedraggable'
+import { VueDraggableNext } from 'vue-draggable-next'
 
-const { getSong, saveSong, loading, songRef, addParentStanza } = useState()
+const {
+  getSong,
+  saveSong,
+  loading,
+  songRef,
+  addParentStanza,
+  updateStanzaOrder,
+} = useState()
 const activeUserName = ref({})
 const activeUserId = ref({})
 const route = useRoute()
 const stanzaCount = ref(0)
 const songId = route.params.id
 const message = ref('')
-
+const draggable = VueDraggableNext
 // TODO - stanzaOrder is not getting updated
 
 onMounted(async () => {
